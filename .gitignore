@@ -4,3 +4,4 @@ TFE_Data/
 __pycache__/
 *.npy
 *.zip
+.venv/
