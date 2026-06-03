@@ -1,0 +1,52 @@
+For each modality (vision or text) and for each model (ResNet50, MobileNetV3, ViT, PVT, BERT, RoBERTa, GPT‑2, CLIP), the notebook:
+
+1. Loads the dataset
+    df = pd.read_pickle("TFE_Data/Datasets/df_Flickr8k.pkl")
+    IMAGE_PATHS = df["image_path"].tolist()
+    CAPTIONS_LIST = df["captions"].tolist()
+    flattened_captions = [cap for caps in CAPTIONS_LIST for cap in caps]
+2. Feeds each image or caption into a pretrained model
+    CNNs → global pooled feature vector
+    Transformers → CLS token or mean‑pooled hidden state
+3. Extracts a single embedding per sample
+    One embedding per image
+    One embedding per caption
+4. Saves the embeddings to disk in a structured directory.
+            TFE_Data/
+            Unimodal_Results/
+                Flickr8k/
+                vision/
+                    resnet50/
+                    embeddings.npy
+                    model_info.json
+                    pixel_values_*.pt
+                text/
+                    bert/
+                    embeddings.npy
+                    model_info.json
+                    input_ids_*.pt
+
+        - embeddings.npy
+            A NumPy array of shape:
+                Vision: (num_images, embedding_dim)
+                Text: (num_captions, embedding_dim)
+        - model_info.json
+            Metadata: model name, architecture, embedding dimension, parameter count, device.
+        - Intermediate tensors (pixel_values_*.pt, input_ids_*.pt)
+
+
+This produces the unimodal embedding space for each model.
+
+This notebook preserves the exact ordering from the dataset:
+    Images: IMAGE_PATHS[i] → embedding Xv[i]
+    Captions: Captions are flattened in order:
+        image0_cap0
+        image0_cap1
+        ...
+        image0_cap4
+        image1_cap0
+        ...
+    So:
+        Caption embedding index j corresponds to
+        image_idx = j // 5  
+        caption_idx = j % 5

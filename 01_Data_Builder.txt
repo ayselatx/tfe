@@ -1,0 +1,45 @@
+Dataset Construction.
+  
+The raw datasets (Flickr8k, Flickr30k, and Conceptual Captions) were processed using a dedicated Data Builder notebook. 
+This notebook downloads the raw images and captions, validates image files, removes corrupted samples, and groups all captions 
+associated with each image into a single record. The final output is a standardized Pandas DataFrame with fields image_name, 
+image_path, and captions, saved as df_Flickr8k.pkl, df_Flickr30k.pkl, and df_ConceptualCaptions.pkl. Each row corresponds to 
+one image, and the list of captions preserves the original ordering. This representation ensures a consistent and reproducible 
+mapping between images, captions, embeddings, projections, and retrieval indices throughout the entire multimodal pipeline.
+
+
+Resume:
+Transform raw, messy, heterogeneous image–caption files into a single clean, validated, standardized DataFrame that every other notebook can rely on.
+
+This includes:
+- downloading raw images and caption files
+- validating that each image physically exists
+- removing corrupted or missing files
+- grouping the 5 captions belonging to each image
+- storing everything in a consistent, machine‑readable format
+
+Each dataset is saved as a Pandas DataFrame serialized with pickle:  
+            TFE_Data/Datasets/df_[ds_name].pkl
+
+Each row has three fields:
+Column	        Type	            Meaning
+image_name	    str	    Filename of the image (e.g., "12345.jpg")
+image_path	    str	    Absolute path to the image on disk
+captions	    list	A list of 5 captions describing the image
+
+Example: 
+{
+    "image_name": "12345.jpg",
+    "image_path": "TFE_Data/Flickr8k/Images/Flicker8k_Dataset/12345.jpg",
+    "captions": [
+        "A dog jumps over a log.",
+        "A brown dog leaps in the forest.",
+        "A dog is mid‑air above a fallen tree.",
+        "A canine jumps outdoors.",
+        "A dog leaps over a wooden obstacle."
+    ]
+}
+
+To access:
+- Image embedding       Xv[i]       corresponds to df.iloc[i]
+- Caption embeddings Xt[i*5 + j]    correspond to df.iloc[i]["captions"][j]

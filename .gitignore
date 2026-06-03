@@ -1,0 +1,15 @@
+# environment
+.venv/
+
+# datasets / ML artifacts
+*.npy
+*.pkl
+*.safetensors
+*.pt
+*.ckpt
+
+TFE_Data/
+Old_Files/
+
+# outputs
+streamlit_app/data/
